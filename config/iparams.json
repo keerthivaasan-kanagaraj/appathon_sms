@@ -1,0 +1,26 @@
+{
+    "from_number": {
+      "display_name": "Phone Number",
+      "description": "Please enter your Twilio Phone Number with country code (Eg.+13345395652)",
+      "type": "text",
+      "required": true
+    },
+    "account_sid": {
+      "display_name": "Account SID",
+      "description": "Please enter your Twilio Account SID",
+      "type": "text",
+      "required": true
+        },
+    "auth_token": {
+      "display_name": "Auth Token",
+      "description": "Please enter your Twilio Auth Token",
+      "type": "text",
+      "required": true
+    },
+    "agent_api_key": {
+        "display_name": "Agent Api Key",
+        "description": "Please enter your Freshservice Agent API Key",
+        "type": "text",
+        "required": true
+      }
+  }
