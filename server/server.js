@@ -19,27 +19,135 @@ exports = {
       const accountSid =iparams["account_sid"];
       const authToken = iparams["auth_token"];
       const t = twilio(accountSid, authToken);
-      ///////
 
 
-      ///////
+
+
+  var message  = data["Body"].toUpperCase().split("-");
+  
+  var  main_menu = `Welcome to SMS portal.\n
+  Thanks for reaching out. Type \n
+  T for TICKET \n
+  P for PRODUCT \n
+  C for CONTRACT \n`
+
+  var  ticket_menu = `You have selected Ticket Menu.\n
+  Type\n 
+  TC for Creating a ticket\n
+  TV for Viewing a ticket\n`
+
+
+  var  product_menu = `You have selected Product Menu.\n
+  Type\n
+  PC for Creating a Product\n
+  PV for Viewing a Product\n`
+
+
+  var  contract_menu = `You have selected Contract Menu.\n
+  Type\n
+  CC for Creating a contract\n
+  CV for Viewing a contract\n`
+
+var tc_menu = `You have selected creating a new ticket.  \n Please Fill The Below Format without double quotes:\n tcreate-"email"-"subject"-"description" `
+var tv_menu = `You have selected viewing a ticket.  \n Please Follow The Format:\n`
+
+
+
+  switch(message[0])
+  {
+    case "HELP","HI","HELLO","HEY": sendMsg(main_menu);
+               break;
+
+   
+    case "T": sendMsg(ticket_menu);
+               break;
+    
+    case "P": sendMsg(product_menu);
+               break;
+
+    case "C": sendMsg(contract_menu);
+               break;
+  }
+
+
+  switch(message[0]){
+    case "TC": sendMsg(tc_menu); break;
+    case "TV":sendMsg(tv_menu); break;
+    
+    case "CC": sendMsg();break;
+    case "CV":sendMsg(); break;
+    
+    case "PC": sendMsg();break;
+    case "PV":sendMsg(); break;
+
+    case "TCREATE":createTicket();break;
+    
+  }
+  function createTicket(){
+    var m=`{
+      "helpdesk_ticket":{
+          "description":"${message[3]}",
+          "subject":"${message[2]}",
+          "email":"${message[1]}",
+          "priority":1, "status":2, "source":2,"ticket_type":"Incident"
+      },
+      "cc_emails":"superman@marvel.com,avengers@marvel.com"
+    }`;
+    console.log(m);
+    postapiCall("/helpdesk/tickets.json",m);
+  }
+  
+     
+      // function getapiCall(path){
+      //   console.log("-------------------------------");
+      //   var headers = {"Authorization": "Basic <%= encode(iparam.agent_api_key) %>",
+      //   'Content-Type': 'application/json'};
+      //   var options = { headers: headers};
+      //   var url = "https://"+iparams["domain"]+path;
+      //   $request.get(url, options)  
+      //   .then (
+      //   function(data) {
+      //     var result= JSON.parse(JSON.stringify(data));
+      //     result=JSON.parse(result["response"]);
+      //     sendMsg(result["helpdesk_ticket"]["description"]);
+      //   },
+      //   function(error) {
+          // sendMsg("Error");
+          // sendMsg(main_menu);
+      //     console.log(error); 
+      //   });
+      // }
+      //getapiCall("/helpdesk/tickets/1.json");
+      function postapiCall(path,msgjson){
+        var headers = {"Authorization": "Basic <%= encode(iparam.agent_api_key) %>",
+        'Content-Type': 'application/json'};
+        var options = { headers: headers,body:msgjson};
+        var url = "https://"+iparams["domain"]+path;
+        $request.post(url, options)  
+        .then (
+        function(data) {
+          sendMsg("Ticket Successfully Created");
+          console.log(data);
+        },
+        function(error) {
+          sendMsg("Error");
+          sendMsg(main_menu);
+          console.log(error); 
+        });
+      }
+
+
+    
+
+      function sendMsg(msg){
       return t.messages.create({
-        body: data["Body"],
+        body: msg,
         to: data["From"],
         from: data["To"]
       })
       .done();
-      // var headers = {"Authorization": "Basic <%= encode("+iparams.api_key+") %>"};
-      // var options = { headers: headers, body: "Hello world"};
-      // var url = "https://vaasan.freshservice.com/tickets.json";
-      // $request.post(url, options)  
-      // .then (
-      // function(data) {
-      //   console.log(data); 
-      // },
-      // function(error) {
-      //   console.log(error); 
-      // });
+    }
+      
   },
 
   onAppInstallHandler: function(payload) {

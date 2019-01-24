@@ -28,5 +28,11 @@
         "description": "Please enter your Twilio Messaging Service Name (You Can Enter Any Name)",
         "type": "text",
         "required": true
+      },
+      "domain": {
+        "display_name": "Domain",
+        "description": "Please enter your Full Domain Name (eg: subdomain.freshservice.com) don't include https",
+        "type": "text",
+        "required": true
       }
 }

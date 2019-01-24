@@ -15,6 +15,7 @@
     "querystring": "0.2.0"
   },
   "whitelisted-domains": [
-    "https://<%= iparam.subdomain %>.freshservice.com" 
+    "https://*.freshservice.com",
+    "https://*.freshgenie.com"
 ]
 }
