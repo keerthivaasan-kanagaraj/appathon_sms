@@ -22,5 +22,11 @@
         "description": "Please enter your Freshservice Agent API Key",
         "type": "text",
         "required": true
+      },
+      "messaging_service_name": {
+        "display_name": "Messaging Service Name",
+        "description": "Please enter your Twilio Messaging Service Name (You Can Enter Any Name)",
+        "type": "text",
+        "required": true
       }
 }

@@ -2,5 +2,6 @@
     "from_number": "+18557810294",
     "account_sid": "AC74a1682de770c1822da3eb8781d6d26e",
     "auth_token": "f70d4660b6c779adc7df30720b32e9e2",
-    "agent_api_key": "eDzSbu1EBDGnSu9wswt6"
+    "agent_api_key": "eDzSbu1EBDGnSu9wswt6",
+    "messaging_service_name": "testsms"
 }

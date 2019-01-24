@@ -11,7 +11,8 @@
     }
   },
   "dependencies": {
-    "twilio": "3.27.1"
+    "twilio": "3.27.1",
+    "querystring": "0.2.0"
   },
   "whitelisted-domains": [
     "https://<%= iparam.subdomain %>.freshservice.com" 

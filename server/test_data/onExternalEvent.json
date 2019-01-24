@@ -1,11 +1,25 @@
 {
-  "account_id": 1,
-  "event": "onExternalEvent",
-  "region": "US",
-  "timestamp": 1500351361762,
-  "options": "freshdesk.onExternalEvent",
-  "data": "{ \"timestamp\": 1500456400209, \"event\": \"user_created\", \"user\": { \"id\": \"557058:d2254582\", \"email\": \"xyz@xyz.com\"  } }",
-  "headers": {
-    "Content-Type": "application/json"
-  }
+  "sid": "SM30ff8b80560c4c6bbde9f10a98689f23",
+  "date_created": "Thu, 24 Jan 2019 07:59:37 +0000",
+  "date_updated": "Thu, 24 Jan 2019 07:59:37 +0000",
+  "date_sent": null,
+  "account_sid": "AC74a1682de770c1822da3eb8781d6d26e",
+  "to": "+13155667182",
+  "from": "+18557810294",
+  "messaging_service_sid": null,
+  "body": "fsadgfsiahfdouhsaodfsahi",
+  "status": "queued",
+  "num_segments": "1",
+  "num_media": "0",
+  "direction": "outbound-api",
+  "api_version": "2010-04-01",
+  "price": null,
+  "price_unit": "USD",
+  "error_code": null,
+  "error_message": null,
+  "uri": "/2010-04-01/Accounts/AC74a1682de770c1822da3eb8781d6d26e/Messages/SM30ff8b80560c4c6bbde9f10a98689f23.json",
+  "subresource_uris": {
+    "media": "/2010-04-01/Accounts/AC74a1682de770c1822da3eb8781d6d26e/Messages/SM30ff8b80560c4c6bbde9f10a98689f23/Media.json"
+  },
+  "data": "ToCountry=US&ToState=&SmsMessageSid=SMba6a2a2b9d6cdd69a0d9553b17b5cbf6&NumMedia=0&ToCity=&FromZip=13676&SmsSid=SMba6a2a2b9d6cdd69a0d9553b17b5cbf6&FromState=NY&SmsStatus=received&FromCity=POTSDAM&Body=Thh&FromCountry=US&To=%2B18557810294&MessagingServiceSid=MG7591980e38c664c8d50a4f8e99906ba2&ToZip=&NumSegments=1&MessageSid=SMba6a2a2b9d6cdd69a0d9553b17b5cbf6&AccountSid=AC74a1682de770c1822da3eb8781d6d26e&From=%2B13155667182&ApiVersion=2010-04-01"
 }
