@@ -55,10 +55,6 @@ var tv_menu = `You have selected viewing a ticket.  \n Please Follow The Format:
 
   switch(message[0])
   {
-    case "HELP","HI","HELLO","HEY": sendMsg(main_menu);
-               break;
-
-   
     case "T": sendMsg(ticket_menu);
                break;
     
@@ -66,7 +62,7 @@ var tv_menu = `You have selected viewing a ticket.  \n Please Follow The Format:
                break;
 
     case "C": sendMsg(contract_menu);
-               break;
+               break;         
   }
 
 
@@ -81,6 +77,9 @@ var tv_menu = `You have selected viewing a ticket.  \n Please Follow The Format:
     case "PV":sendMsg(); break;
 
     case "TCREATE":createTicket();break;
+
+    default: sendMsg(main_menu);
+               break;  
     
   }
   function createTicket(){
@@ -100,7 +99,7 @@ var tv_menu = `You have selected viewing a ticket.  \n Please Follow The Format:
      
       // function getapiCall(path){
       //   console.log("-------------------------------");
-      //   var headers = {"Authorization": "Basic <%= encode(iparam.agent_api_key) %>",
+      //   var headers = {"Authorization": "Basic <%= iparam.agent_api_key %>",
       //   'Content-Type': 'application/json'};
       //   var options = { headers: headers};
       //   var url = "https://"+iparams["domain"]+path;
@@ -119,7 +118,7 @@ var tv_menu = `You have selected viewing a ticket.  \n Please Follow The Format:
       // }
       //getapiCall("/helpdesk/tickets/1.json");
       function postapiCall(path,msgjson){
-        var headers = {"Authorization": "Basic <%= encode(iparam.agent_api_key) %>",
+        var headers = {"Authorization": "Basic <%= iparam.agent_api_key %>",
         'Content-Type': 'application/json'};
         var options = { headers: headers,body:msgjson};
         var url = "https://"+iparams["domain"]+path;
@@ -144,8 +143,15 @@ var tv_menu = `You have selected viewing a ticket.  \n Please Follow The Format:
         body: msg,
         to: data["From"],
         from: data["To"]
-      })
-      .done();
+      },function(error,message){
+        if(!error){
+          console.log("Success"+message);
+        }else{
+          sendMsg("Error");
+          sendMsg(main_menu);
+          console.log(error);
+        }
+      });
     }
       
   },
