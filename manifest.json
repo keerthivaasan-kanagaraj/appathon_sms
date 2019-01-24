@@ -1,6 +1,19 @@
 {
   "platform-version": "2.0",
   "product": {
-    "freshservice": {}
-  }
+    "freshservice": {
+      "location": {
+        "ticket_sidebar": {
+          "url": "template.html",
+          "icon": "icon.svg"
+        }
+      }
+    }
+  },
+  "dependencies": {
+    "twilio": "3.27.1"
+  },
+  "whitelisted-domains": [
+    "https://<%= iparam.subdomain %>.freshservice.com" 
+]
 }
