@@ -22,7 +22,6 @@ exports = {
 
 
 
-
   var message  = data["Body"].toUpperCase().split("-");
   
   var  main_menu = `Welcome to SMS portal.\n
@@ -37,19 +36,19 @@ exports = {
   TV for Viewing a ticket\n`
 
 
-  var  product_menu = `You have selected Product Menu.\n
-  Type\n
-  PC for Creating a Product\n
-  PV for Viewing a Product\n`
+  // var  product_menu = `You have selected Product Menu.\n
+  // Type\n
+  // PC for Creating a Product\n
+  // PV for Viewing a Product\n`
 
 
-  var  contract_menu = `You have selected Contract Menu.\n
-  Type\n
-  CC for Creating a contract\n
-  CV for Viewing a contract\n`
+  // var  contract_menu = `You have selected Contract Menu.\n
+  // Type\n
+  // CC for Creating a contract\n
+  // CV for Viewing a contract\n`
 
 var tc_menu = `You have selected creating a new ticket.  \n Please Fill The Below Format without double quotes:\n tcreate-"email"-"subject"-"description" `
-var tv_menu = `You have selected viewing a ticket.  \n Please Follow The Format:\n`
+var tv_menu = `You have selected viewing a ticket.  \n Please Fill The Below Format without double quotes:\n tview-"id"`
 
 
 
@@ -58,31 +57,32 @@ var tv_menu = `You have selected viewing a ticket.  \n Please Follow The Format:
     case "T": sendMsg(ticket_menu);
                break;
     
-    case "P": sendMsg(product_menu);
-               break;
+    // case "P": sendMsg(product_menu);
+    //            break;
 
-    case "C": sendMsg(contract_menu);
-               break;         
-  }
+    // case "C": sendMsg(contract_menu);
+    //            break;         
+  // }
 
 
-  switch(message[0]){
+  // switch(message[0]){
     case "TC": sendMsg(tc_menu); break;
     case "TV":sendMsg(tv_menu); break;
     
-    case "CC": sendMsg();break;
-    case "CV":sendMsg(); break;
+    // case "CC": sendMsg();break;
+    // case "CV":sendMsg(); break;
     
-    case "PC": sendMsg();break;
-    case "PV":sendMsg(); break;
+    // case "PC": sendMsg();break;
+    // case "PV":sendMsg(); break;
 
     case "TCREATE":createTicket();break;
-
+    case "TVIEW":viewTicket();break;
     default: sendMsg(main_menu);
                break;  
     
   }
   function createTicket(){
+    if(message.length==4){
     var m=`{
       "helpdesk_ticket":{
           "description":"${message[3]}",
@@ -94,29 +94,41 @@ var tv_menu = `You have selected viewing a ticket.  \n Please Follow The Format:
     }`;
     console.log(m);
     postapiCall("/helpdesk/tickets.json",m);
+  }else{
+    sendMsg("Error Mis-Matched Message Format");
+    sendMsg(tc_menu);
   }
-  
-     
-      // function getapiCall(path){
-      //   console.log("-------------------------------");
-      //   var headers = {"Authorization": "Basic <%= iparam.agent_api_key %>",
-      //   'Content-Type': 'application/json'};
-      //   var options = { headers: headers};
-      //   var url = "https://"+iparams["domain"]+path;
-      //   $request.get(url, options)  
-      //   .then (
-      //   function(data) {
-      //     var result= JSON.parse(JSON.stringify(data));
-      //     result=JSON.parse(result["response"]);
-      //     sendMsg(result["helpdesk_ticket"]["description"]);
-      //   },
-      //   function(error) {
-          // sendMsg("Error");
-          // sendMsg(main_menu);
-      //     console.log(error); 
-      //   });
-      // }
-      //getapiCall("/helpdesk/tickets/1.json");
+  }
+
+  function viewTicket(){
+    if(message.length==2){
+    getapiCall("/helpdesk/tickets/"+message[1]+".json");
+    }else{
+      sendMsg("Error Mis-Matched Message Format");
+      sendMsg(tv_menu);
+    }
+  }
+      function getapiCall(path){
+        console.log("-------------------------------");
+        var headers = {"Authorization": "Basic <%= iparam.agent_api_key %>",
+        'Content-Type': 'application/json'};
+        var options = { headers: headers};
+        var url = "https://"+iparams["domain"]+path;
+        $request.get(url, options)  
+        .then (
+        function(data) {
+          var result= JSON.parse(JSON.stringify(data));
+          result=JSON.parse(result["response"]);
+          if(message[0]=="TVIEW"){
+            sendMsg("For id: "+message[1]+" \nSubject: "+result["helpdesk_ticket"]["subject"]+" \nDescription: "+result["helpdesk_ticket"]["description"]);
+          }
+        },
+        function(error) {
+          sendMsg("Error");
+          sendMsg(main_menu);
+          console.log(error); 
+        });
+      }
       function postapiCall(path,msgjson){
         var headers = {"Authorization": "Basic <%= iparam.agent_api_key %>",
         'Content-Type': 'application/json'};
@@ -125,8 +137,12 @@ var tv_menu = `You have selected viewing a ticket.  \n Please Follow The Format:
         $request.post(url, options)  
         .then (
         function(data) {
-          sendMsg("Ticket Successfully Created");
-          console.log(data);
+          var result= JSON.parse(JSON.stringify(data));
+          result=JSON.parse(result["response"]);
+         
+          if(message[0]=="TCREATE"){
+            sendMsg("Ticket Successfully Created Your Ticket ID: "+result["item"]["helpdesk_ticket"]["display_id"]+"\n To View Tickets Please Fill The Below Format without double quotes:\n tview-\"id\"");
+           }
         },
         function(error) {
           sendMsg("Error");
