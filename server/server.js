@@ -22,33 +22,40 @@ exports = {
 
 
 
-  var message  = data["Body"].toUpperCase().split("-");
-  
-  var  main_menu = `Welcome to SMS portal.\n
-  Thanks for reaching out. Type \n
-  T for TICKET \n
-  P for PRODUCT \n
-  C for CONTRACT \n`
+      var message  = data["Body"].toUpperCase().split("-");
+      
+      var  main_menu = `Welcome to SMS portal.\n
+      Thanks for reaching out. Type \n
+      T for TICKET \n
+      P for PRODUCT \n
+      C for CONTRACT \n
+      SR for Service Request`
 
-  var  ticket_menu = `You have selected Ticket Menu.\n
-  Type\n 
-  TC for Creating a ticket\n
-  TV for Viewing a ticket\n`
+      var  ticket_menu = `You have selected Ticket Menu.\n
+      Type\n 
+      TC for Creating a ticket\n
+      TV for Viewing a ticket\n`
+      var sr_menu = `You have selected Service Request Menu.
+      Type\n
+      SRCL to view all Service Item Categories\n
+      SRCI-\"category_id\" to view all items in that category\n
+      SI-\"item_id\" to display details about item\n
+      `
+
+      // var  product_menu = `You have selected Product Menu.\n
+      // Type\n
+      // PC for Creating a Product\n
+      // PV for Viewing a Product\n`
 
 
-  // var  product_menu = `You have selected Product Menu.\n
-  // Type\n
-  // PC for Creating a Product\n
-  // PV for Viewing a Product\n`
+      // var  contract_menu = `You have selected Contract Menu.\n
+      // Type\n
+      // CC for Creating a contract\n
+      // CV for Viewing a contract\n`
 
 
-  // var  contract_menu = `You have selected Contract Menu.\n
-  // Type\n
-  // CC for Creating a contract\n
-  // CV for Viewing a contract\n`
-
-var tc_menu = `You have selected creating a new ticket.  \n Please Fill The Below Format without double quotes:\n tcreate-"email"-"subject"-"description" `
-var tv_menu = `You have selected viewing a ticket.  \n Please Fill The Below Format without double quotes:\n tview-"id"`
+      var tc_menu = `You have selected creating a new ticket.  \n Please Fill The Below Format without double quotes:\n tcreate-"email"-"subject"-"description" `
+      var tv_menu = `You have selected viewing a ticket.  \n Please Fill The Below Format without double quotes:\n tview-"id"`
 
 
 
@@ -62,10 +69,10 @@ var tv_menu = `You have selected viewing a ticket.  \n Please Fill The Below For
 
     // case "C": sendMsg(contract_menu);
     //            break;         
-  // }
 
+    case "SR": sendMsg(sr_menu);break;
 
-  // switch(message[0]){
+  
     case "TC": sendMsg(tc_menu); break;
     case "TV":sendMsg(tv_menu); break;
     
@@ -77,12 +84,15 @@ var tv_menu = `You have selected viewing a ticket.  \n Please Fill The Below For
 
     case "TCREATE":createTicket();break;
     case "TVIEW":viewTicket();break;
+    case "SRCL":allServiceCategory();break;
+    case "SRCI":allServiceCategoryItems();break;
+    case "SI":serviceItem();break;
     default: sendMsg(main_menu);
                break;  
     
   }
   function createTicket(){
-    if(message.length==4){
+    if(message.length==4&&message[0]=="TCREATE"){
     var m=`{
       "helpdesk_ticket":{
           "description":"${message[3]}",
@@ -101,15 +111,46 @@ var tv_menu = `You have selected viewing a ticket.  \n Please Fill The Below For
   }
 
   function viewTicket(){
-    if(message.length==2){
+    if(message.length==2&&message[0]=="TVIEW"){
     getapiCall("/helpdesk/tickets/"+message[1]+".json");
     }else{
       sendMsg("Error Mis-Matched Message Format");
       sendMsg(tv_menu);
     }
   }
+
+  function allServiceCategory(){
+    if(message.length==1&&message[0]=="SRCL"){
+      getapiCall("/catalog/categories.json");
+    }else{
+      sendMsg("Error Mis-Matched Message Format");
+      sendMsg("Type SRCL to view all service catrgories");
+    }
+  }
+
+  function allServiceCategoryItems(){
+    if(message.length==2&&message[0]=="SRCI"){
+      getapiCall("/catalog/categories/"+message[1]+"/items.json");
+    }else{
+      sendMsg("Error Mis-Matched Message Format");
+      sendMsg("Type SRCI-\"category_id\" to view all service catrgories items");
+    }
+  }
+
+  function serviceItem(){
+    if(message.length==2&&message[0]=="SI"){
+      getapiCall("/catalog/items/"+message[1]+".json");
+    }else{
+      sendMsg("Error Mis-Matched Message Format");
+      sendMsg("Type SI-\"item_id\" to view all service catrgories items");
+    }
+  }
+
+  // function serviceRequestItem(){
+
+  // }
+
       function getapiCall(path){
-        console.log("-------------------------------");
         var headers = {"Authorization": "Basic <%= iparam.agent_api_key %>",
         'Content-Type': 'application/json'};
         var options = { headers: headers};
@@ -119,8 +160,25 @@ var tv_menu = `You have selected viewing a ticket.  \n Please Fill The Below For
         function(data) {
           var result= JSON.parse(JSON.stringify(data));
           result=JSON.parse(result["response"]);
+          console.log(result);
           if(message[0]=="TVIEW"){
             sendMsg("For id: "+message[1]+" \nSubject: "+result["helpdesk_ticket"]["subject"]+" \nDescription: "+result["helpdesk_ticket"]["description"]);
+          }else if(message[0]=="SRCL"){
+            var temp="category id => category name\n";
+            result.forEach(function(item){
+              temp+=item.id+"=>"+item.name+", \n";
+            });
+            sendMsg("Your Categories List:  \n"+temp);
+          }else if(message[0]=="SRCI"){
+            var temp="Item id => Item name\n";
+            result.forEach(function(item){
+              temp+=item.display_id+"=>"+item.name+", \n";
+            });
+            console.log("---------------------")
+            console.log(temp)
+            sendMsg("Your Category Items List:  \n"+temp);
+          }else if(message[0]=="SI"){
+            sendMsg("For id: "+message[1]+" \nName: "+result["catalog_item"]["name"]+" \nDescription: "+result["catalog_item"]["description"]);
           }
         },
         function(error) {
@@ -139,7 +197,7 @@ var tv_menu = `You have selected viewing a ticket.  \n Please Fill The Below For
         function(data) {
           var result= JSON.parse(JSON.stringify(data));
           result=JSON.parse(result["response"]);
-         
+          console.log(result);
           if(message[0]=="TCREATE"){
             sendMsg("Ticket Successfully Created Your Ticket ID: "+result["item"]["helpdesk_ticket"]["display_id"]+"\n To View Tickets Please Fill The Below Format without double quotes:\n tview-\"id\"");
            }
